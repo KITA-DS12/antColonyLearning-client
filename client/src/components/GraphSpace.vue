@@ -20,3 +20,12 @@ export default {
   })
 }
 </script>
+
+<style>
+.graph-space {
+  width: 90%;
+  height: 60vh;
+  border: 1px solid;
+  margin: 0 auto;
+}
+</style>

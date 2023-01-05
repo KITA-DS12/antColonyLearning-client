@@ -69,4 +69,8 @@ label {
 .right {
   display: inline-block;
 }
+
+.left {
+  padding-right: 3vw;
+}
 </style>

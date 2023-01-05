@@ -1,6 +1,8 @@
 <template>
   <img id="logo" src="@/assets/aclearning.png" alt="">
+  <div class="space" />
   <ControlPanel />
+  <div class="space" />
   <GraphSpace />
 </template>
 
@@ -17,8 +19,11 @@ export default {
 </script>
 
 <style>
-  #logo {
-    padding: 20px;
-    width: 30%;
-  }
+#logo {
+  padding: 20px;
+  width: 30%;
+}
+.space {
+  height: 5vh;
+}
 </style>
