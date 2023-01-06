@@ -2,7 +2,7 @@
   <div class="control-panel">
     <div class="left">
       <label>Node:</label>
-      <el-button>
+      <el-button @click="addNode">
         <el-icon>
           <CirclePlusFilled />
         </el-icon>
@@ -55,6 +55,15 @@ import { UploadUserFile } from 'element-plus'
 import { Nodes, Edges, Layouts, GridLayout, EventHandlers } from "v-network-graph"
 
 export default {
+  props: ["graphObject"],
+  methods: {
+    addNode() {
+      const nodeId = this.graphObject.nextNodeIndex
+      const name = `Node${this.graphObject.nextNodeIndex}`
+      this.graphObject.nodes[this.graphObject.nextNodeIndex] = { name }
+      this.graphObject.nextNodeIndex++
+    }
+  }
 }
 </script>
 

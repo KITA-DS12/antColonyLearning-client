@@ -1,9 +1,9 @@
 <template>
   <img id="logo" src="@/assets/aclearning.png" alt="">
   <div class="space" />
-  <ControlPanel />
+  <ControlPanel :graphObject="graphObject" />
   <div class="space" />
-  <GraphSpace />
+  <GraphSpace :graphObject="graphObject" />
 </template>
 
 <script>
@@ -15,6 +15,14 @@ export default {
     GraphSpace,
     ControlPanel,
   },
+  data: () => ({
+    graphObject: {
+      nodes: {},
+      nextNodeIndex: 0,
+      edges: {},
+      nextEdgeIndex: 0,
+    }
+  })
 }
 </script>
 
