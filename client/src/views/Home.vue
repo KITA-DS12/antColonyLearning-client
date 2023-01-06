@@ -1,28 +1,18 @@
 <template>
   <img id="logo" src="@/assets/aclearning.png" alt="">
   <div class="space" />
-  <ControlPanel :graphObject="graphObject" />
-  <div class="space" />
-  <GraphSpace :graphObject="graphObject" />
+  <GraphSpace />
 </template>
 
 <script>
 import GraphSpace from '@/components/GraphSpace'
-import ControlPanel from '@/components/ControlPanel.vue'
 
 export default {
   components: {
     GraphSpace,
-    ControlPanel,
   },
   data: () => ({
-    graphObject: {
-      nodes: {},
-      nextNodeIndex: 0,
-      edges: {},
-      nextEdgeIndex: 0,
-    }
-  })
+  }),
 }
 </script>
 
@@ -32,6 +22,6 @@ export default {
   width: 30%;
 }
 .space {
-  height: 5vh;
+  height: 3vh;
 }
 </style>
