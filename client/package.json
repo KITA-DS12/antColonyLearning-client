@@ -7,12 +7,15 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
+    "dagre": "^0.8.5",
     "element-plus": "^2.2.28",
     "v-network-graph": "^0.8.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {
+    "@types/dagre": "^0.7.48",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
