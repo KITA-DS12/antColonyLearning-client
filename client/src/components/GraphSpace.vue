@@ -31,12 +31,12 @@
               <FullScreen />
             </el-icon>
           </el-button>
-          <el-button>
+          <el-button @click="updateLayout('LR')">
             <el-icon>
               <CaretRight />
             </el-icon>
           </el-button>
-          <el-button>
+          <el-button @click="updateLayout('TB')">
             <el-icon>
               <CaretBottom />
             </el-icon>
@@ -59,8 +59,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
-import { Nodes, Edges, Layouts, Configs, VNetworkGraphInstance, getFullConfigs } from "v-network-graph"
+import { onMounted, ref } from "vue"
+
+import { Nodes, Edges, Layouts, Configs, VNetworkGraphInstance, getFullConfigs, GridLayout } from "v-network-graph"
+import dagre, { layout } from "dagre"
 
 const nodes: Nodes = {
   node1: { name: "Node 1" },
@@ -82,8 +84,64 @@ const layouts: Layouts = {
   },
 }
 const configs: Configs = getFullConfigs()
+configs.view.layoutHandler = new GridLayout({grid: 10})
 const zoomLevel = ref(1)
 const graph = ref<VNetworkGraphInstance>()
+const nodeSize: number = 30
+
+onMounted(() => layout("TB"))
+
+function layout(direction: "TB" | "LR") {
+      if (Object.keys(nodes).length <= 1 || Object.keys(edges).length == 0) {
+        return
+    }
+
+    const g = new dagre.graphlib.Graph()
+    g.setGraph({
+        rankdir: direction,
+        nodesep: nodeSize * 2,
+        edgesep: nodeSize,
+        ranksep: nodeSize * 2,
+    })
+    g.setDefaultEdgeLabel(() => ({}))
+
+    Object.entries(nodes).forEach(([nodeId, node]) => {
+        g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize })
+    })
+
+    Object.values(edges).forEach(edge => {
+        g.setEdge(edge.source, edge.target)
+    })
+
+    dagre.layout(g)
+
+    const box: Record<string, number | undefined> = {}
+    g.nodes().forEach((nodeId: string) => {
+        const x = g.node(nodeId).x
+        const y = g.node(nodeId).y
+        layouts.nodes[nodeId] = { x, y }
+
+        box.top = box.top ? Math.min(box.top, y) : y
+        box.bottom = box.bottom ? Math.max(box.bottom, y) : y
+        box.left = box.left ? Math.min(box.left, x) : x
+        box.right = box.right ? Math.max(box.right, x) : x
+    })
+
+    const graphMargin = nodeSize * 2
+    const viewBox = {
+        top: (box.top ?? 0) - graphMargin,
+        bottom: (box.bottom ?? 0) + graphMargin,
+        left: (box.left ?? 0) - graphMargin,
+        right: (box.right ?? 0) + graphMargin,
+    }
+    graph.value?.setViewBox(viewBox)
+}
+
+function updateLayout(direction: "TB" | "LR") {
+    graph.value?.transitionWhile(() => {
+        layout(direction)
+    })
+}
 
 </script>
 
