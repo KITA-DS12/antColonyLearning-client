@@ -4,11 +4,15 @@
       <label>Node:</label>
       <br>
       <div class="button-block">
-        <el-button @click="addNode">
-          <el-icon> <CirclePlusFilled /> </el-icon>
+        <el-button>
+          <el-icon>
+            <CirclePlusFilled />
+          </el-icon>
         </el-button>
-        <el-button @click="removeNode">
-          <el-icon> <RemoveFilled /> </el-icon>
+        <el-button>
+          <el-icon>
+            <RemoveFilled />
+          </el-icon>
         </el-button>
       </div>
     </div>
@@ -17,48 +21,25 @@
       <br>
       <div class="button-block">
         <el-button>
-          <el-icon> <CaretRight /> </el-icon>
+          <el-icon>
+            <CaretRight />
+          </el-icon>
         </el-button>
         <el-button>
-          <el-icon> <CaretBottom /> </el-icon>
+          <el-icon>
+            <CaretBottom />
+          </el-icon>
         </el-button>
       </div>
     </div>
     <div class="right">
       <label>Zoom:</label>
       <div class="button-block">
-        <el-slider
-          v-model="layoutObject.zoomLevel"
-          :min=0.1
-          :max=16
-          :step=0.1
-        />
+        <el-slider :min=0.1 :max=12 :step=0.1 />
       </div>
     </div>
   </div>
 </template>
-
-<script>
-import { UploadUserFile } from 'element-plus'
-import { Nodes, Edges, Layouts, GridLayout, EventHandlers } from "v-network-graph"
-
-export default {
-  props: ['graphObject', 'selectedObject', 'layoutObject'],
-  methods: {
-    addNode() {
-      const nodeId = this.graphObject.nextNodeIndex
-      const name = `Node${this.graphObject.nextNodeIndex}`
-      this.graphObject.nodes[this.graphObject.nextNodeIndex] = { name }
-      this.graphObject.nextNodeIndex++
-    },
-    removeNode() {
-      for (const nodeId of this.selectedObject.nodes) {
-        delete this.graphObject.nodes[nodeId]
-      }
-    },
-  }
-}
-</script>
 
 <style>
 .control-panel {
