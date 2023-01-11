@@ -5,7 +5,7 @@
         <label>Node:</label>
         <br>
         <div class="button-block">
-          <el-button @click="nodeDialogVisible = true">
+          <el-button @click="openDialog">
             <el-icon>
               <CirclePlusFilled />
             </el-icon>
@@ -22,7 +22,7 @@
             </el-form>
             <template #footer>
               <span class="dialog-footer">
-                <el-button type="primary" @click="addNode">
+                <el-button type="primary" @click="addNode(formRef)">
                   Add
                 </el-button>
               </span>
@@ -84,38 +84,26 @@ import { Nodes, Edges, Layouts, Configs, VNetworkGraphInstance, getFullConfigs, 
 import { FormInstance } from "element-plus"
 import dagre, { layout } from "dagre"
 
-const nodes: Nodes = {
-  node1: { name: "Node 1" },
-  node2: { name: "Node 2" },
-  node3: { name: "Node 3" },
-  node4: { name: "Node 4" },
-}
+const nodes: Nodes = reactive({})
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
+const edges: Edges = reactive({})
+const layouts: Layouts = reactive({})
 
-const edges: Edges = {
-  edge1: { source: "node1", target: "node2" },
-  edge2: { source: "node2", target: "node3" },
-  edge3: { source: "node3", target: "node4" },
-}
-
-const layouts: Layouts = {
-  nodes: {
-    node1: { x: 0, y: 0 },
-    node2: { x: 50, y: 50 },
-    node3: { x: 100, y: 0 },
-    node4: { x: 150, y: 50 },
-  },
-}
 const configs: Configs = getFullConfigs()
-configs.view.layoutHandler = new GridLayout({grid: 10})
+configs.view.layoutHandler = new GridLayout({ grid: 10 })
 const zoomLevel = ref(1)
 const graph = ref<VNetworkGraphInstance>()
 const nodeSize: number = 30
 
 const nodeDialogVisible = ref(false)
-const form = reactive({
-  title: '',
-  link: '',
+
+interface NodeFormType {
+  title: string
+  link: string
+}
+const form: NodeFormType = reactive({
+  title: "",
+  link: "",
 })
 const formRef = ref<FormInstance>()
 
@@ -123,61 +111,66 @@ onMounted(() => layout("TB"))
 
 function layout(direction: "TB" | "LR") {
   if (Object.keys(nodes).length <= 1 || Object.keys(edges).length == 0) {
-      return
+    return
   }
 
   const g = new dagre.graphlib.Graph()
   g.setGraph({
-      rankdir: direction,
-      nodesep: nodeSize * 2,
-      edgesep: nodeSize,
-      ranksep: nodeSize * 2,
+    rankdir: direction,
+    nodesep: nodeSize * 2,
+    edgesep: nodeSize,
+    ranksep: nodeSize * 2,
   })
   g.setDefaultEdgeLabel(() => ({}))
 
   Object.entries(nodes).forEach(([nodeId, node]) => {
-      g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize })
+    g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize })
   })
 
   Object.values(edges).forEach(edge => {
-      g.setEdge(edge.source, edge.target)
+    g.setEdge(edge.source, edge.target)
   })
 
   dagre.layout(g)
 
   const box: Record<string, number | undefined> = {}
   g.nodes().forEach((nodeId: string) => {
-      const x = g.node(nodeId).x
-      const y = g.node(nodeId).y
-      layouts.nodes[nodeId] = { x, y }
+    const x = g.node(nodeId).x
+    const y = g.node(nodeId).y
+    layouts.nodes[nodeId] = { x, y }
 
-      box.top = box.top ? Math.min(box.top, y) : y
-      box.bottom = box.bottom ? Math.max(box.bottom, y) : y
-      box.left = box.left ? Math.min(box.left, x) : x
-      box.right = box.right ? Math.max(box.right, x) : x
+    box.top = box.top ? Math.min(box.top, y) : y
+    box.bottom = box.bottom ? Math.max(box.bottom, y) : y
+    box.left = box.left ? Math.min(box.left, x) : x
+    box.right = box.right ? Math.max(box.right, x) : x
   })
 
   const graphMargin = nodeSize * 2
   const viewBox = {
-      top: (box.top ?? 0) - graphMargin,
-      bottom: (box.bottom ?? 0) + graphMargin,
-      left: (box.left ?? 0) - graphMargin,
-      right: (box.right ?? 0) + graphMargin,
+    top: (box.top ?? 0) - graphMargin,
+    bottom: (box.bottom ?? 0) + graphMargin,
+    left: (box.left ?? 0) - graphMargin,
+    right: (box.right ?? 0) + graphMargin,
   }
   graph.value?.setViewBox(viewBox)
 }
 
 function updateLayout(direction: "TB" | "LR") {
   graph.value?.transitionWhile(() => {
-      layout(direction)
+    layout(direction)
   })
 }
 
-function addNode() {
-  const nodeId = nextNodeIndex.value
-  nodes[nodeId] = { this.$refs['form'].title }
+const openDialog = () => {
+  nodeDialogVisible.value = true
+}
+
+const addNode = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  const nodeId: string = `node${nextNodeIndex.value}`
+  const name: string = form.title
+  nodes[nodeId] = { name }
   nextNodeIndex.value++
-  nodeDialogVisible = false
 }
 
 </script>
