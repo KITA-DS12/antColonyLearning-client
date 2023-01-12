@@ -82,12 +82,12 @@ import { onMounted, reactive, ref } from "vue"
 
 import { Nodes, Edges, Layouts, Configs, VNetworkGraphInstance, getFullConfigs, GridLayout } from "v-network-graph"
 import { FormInstance } from "element-plus"
-import dagre, { layout } from "dagre"
+import dagre from "dagre"
 
 const nodes: Nodes = reactive({})
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const edges: Edges = reactive({})
-const layouts: Layouts = reactive({})
+const layouts: Layouts = reactive({nodes: {}})
 
 const configs: Configs = getFullConfigs()
 configs.view.layoutHandler = new GridLayout({ grid: 10 })
@@ -110,9 +110,10 @@ const formRef = ref<FormInstance>()
 onMounted(() => layout("TB"))
 
 function layout(direction: "TB" | "LR") {
-  if (Object.keys(nodes).length <= 1 || Object.keys(edges).length == 0) {
+  if (Object.keys(nodes).length <= 1) {
     return
   }
+
 
   const g = new dagre.graphlib.Graph()
   g.setGraph({
