@@ -10,26 +10,7 @@
               <CirclePlusFilled />
             </el-icon>
           </el-button>
-
-          <el-dialog v-model="nodeDialogVisible" title="New Node">
-            <el-form :model="form" ref="formRef">
-              <el-form-item label="Title">
-                <el-input v-model="form.title" />
-              </el-form-item>
-              <el-form-item label="Link">
-                <el-input v-model="form.link" />
-              </el-form-item>
-            </el-form>
-            <template #footer>
-              <span class="dialog-footer">
-                <el-button type="primary" @click="addNode(formRef)">
-                  Add
-                </el-button>
-              </span>
-            </template>
-          </el-dialog>
-
-          <el-button>
+          <el-button @click="removeNode">
             <el-icon>
               <RemoveFilled />
             </el-icon>
@@ -62,6 +43,25 @@
           </el-button>
         </div>
       </div>
+
+      <el-dialog v-model="nodeDialogVisible" title="New Node">
+        <el-form :model="form" ref="formRef">
+          <el-form-item label="Title">
+            <el-input v-model="form.title" />
+          </el-form-item>
+          <el-form-item label="Link">
+            <el-input v-model="form.link" />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button type="primary" @click="addNode(formRef)">
+              Add
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
+
       <div class="right">
         <label>Zoom:</label>
         <div class="button-block">
@@ -89,7 +89,16 @@ const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const edges: Edges = reactive({})
 const layouts: Layouts = reactive({nodes: {}})
 
+const selectedNodes = ref<string[]>([])
+const selectedEdges = ref<string[]>([])
+
 const configs: Configs = getFullConfigs()
+configs.node.selectable = true
+configs.node.normal.color = "#CC88EE"
+configs.node.hover.color = "#DD66DD"
+configs.node.focusring.color = "#CC66AA"
+configs.view.minZoomLevel = 0.1
+configs.view.maxZoomLevel = 12
 configs.view.layoutHandler = new GridLayout({ grid: 10 })
 const zoomLevel = ref(1)
 const graph = ref<VNetworkGraphInstance>()
@@ -171,7 +180,14 @@ const addNode = (formEl: FormInstance | undefined) => {
   const nodeId: string = `node${nextNodeIndex.value}`
   const name: string = form.title
   nodes[nodeId] = { name }
+  nodes[nodeId].link = form.link
   nextNodeIndex.value++
+}
+
+const removeNode = () => {
+  for (const edgeId of selectedNodes.value) {
+    delete edges[edgeId]
+  }
 }
 
 </script>
