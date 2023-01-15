@@ -1,4 +1,16 @@
 <template>
+  <div class="file-button">
+    <el-button>
+      <el-icon>
+        <Upload />
+      </el-icon>
+    </el-button>
+    <el-button>
+      <el-icon>
+        <Download />
+      </el-icon>
+    </el-button>
+  </div>
   <div class="graph-space">
     <div class="control-panel">
       <div class="left">
@@ -87,7 +99,7 @@ import dagre from "dagre"
 const nodes: Nodes = reactive({})
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const edges: Edges = reactive({})
-const layouts: Layouts = reactive({nodes: {}})
+const layouts: Layouts = reactive({ nodes: {} })
 
 const selectedNodes = ref<string[]>([])
 const selectedEdges = ref<string[]>([])
@@ -193,6 +205,13 @@ const removeNode = () => {
 </script>
 
 <style>
+.file-button {
+  width: 90%;
+  text-align: right;
+  padding: 0 0 20px 0;
+  padding: 0 0 20px 0;
+}
+
 .control-panel {
   padding: 20px 0;
 }
