@@ -1,5 +1,6 @@
 <template>
   <div class="file-button">
+    <label>File:</label>
     <el-button>
       <el-icon>
         <Upload />
