@@ -6,7 +6,7 @@
         <Upload />
       </el-icon>
     </el-button>
-    <el-button>
+    <el-button @click="downloadFile">
       <el-icon>
         <Download />
       </el-icon>
@@ -201,6 +201,15 @@ const removeNode = () => {
   for (const edgeId of selectedNodes.value) {
     delete edges[edgeId]
   }
+}
+
+const downloadFile = () => {
+  const nodeJson = JSON.stringify(nodes)
+  const edgeJson = JSON.stringify(edges)
+  const layoutJson = JSON.stringify(layouts)
+  console.log(nodeJson)
+  console.log(edgeJson)
+  console.log(layoutJson)
 }
 
 </script>
