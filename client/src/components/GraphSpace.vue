@@ -207,9 +207,17 @@ const downloadFile = () => {
   const nodeJson = JSON.stringify(nodes)
   const edgeJson = JSON.stringify(edges)
   const layoutJson = JSON.stringify(layouts)
-  console.log(nodeJson)
-  console.log(edgeJson)
-  console.log(layoutJson)
+  const fileJson = JSON.stringify({
+    nodes: nodeJson,
+    edges: edgeJson,
+    layouts: layoutJson
+  })
+  const blob = new Blob([fileJson], {type: 'application/json'})
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = 'data.json'
+  link.click()
+  link.remove()
 }
 
 </script>
