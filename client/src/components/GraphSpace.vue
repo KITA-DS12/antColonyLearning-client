@@ -1,7 +1,7 @@
 <template>
   <div class="file-button">
     <label>File:</label>
-    <el-button>
+    <el-button @click="uploadFile">
       <el-icon>
         <Upload />
       </el-icon>
@@ -212,12 +212,18 @@ const downloadFile = () => {
     edges: edgeJson,
     layouts: layoutJson
   })
-  const blob = new Blob([fileJson], {type: 'application/json'})
+  const blob = new Blob([fileJson], { type: 'application/json' })
   const link = document.createElement('a')
   link.href = URL.createObjectURL(blob)
   link.download = 'data.json'
   link.click()
   link.remove()
+}
+
+const uploadFile = () => {
+  const ref: any = this.$refs.input
+  const file = ref.files[0]
+  console.log(file)
 }
 
 </script>
