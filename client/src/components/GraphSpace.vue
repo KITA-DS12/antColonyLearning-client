@@ -1,16 +1,18 @@
 <template>
   <div class="file-button">
-    <label>File:</label>
-    <el-button @click="uploadFile">
-      <el-icon>
-        <Upload />
-      </el-icon>
-    </el-button>
-    <el-button @click="downloadFile">
-      <el-icon>
-        <Download />
-      </el-icon>
-    </el-button>
+    <el-upload v-model:file-list="fileList">
+      <label>File:</label>
+      <el-button @click="uploadFile">
+        <el-icon>
+          <Upload />
+        </el-icon>
+      </el-button>
+      <el-button @click="downloadFile">
+        <el-icon>
+          <Download />
+        </el-icon>
+      </el-button>
+    </el-upload>
   </div>
   <div class="graph-space">
     <div class="control-panel">
@@ -94,7 +96,7 @@
 import { onMounted, reactive, ref } from "vue"
 
 import { Nodes, Edges, Layouts, Configs, VNetworkGraphInstance, getFullConfigs, GridLayout } from "v-network-graph"
-import { FormInstance } from "element-plus"
+import { FormInstance, UploadInstance } from "element-plus"
 import dagre from "dagre"
 
 const nodes: Nodes = reactive({})
@@ -220,9 +222,9 @@ const downloadFile = () => {
   link.remove()
 }
 
+const uploadRef = ref<UploadInstance>()
 const uploadFile = () => {
-  const ref: any = this.$refs.input
-  const file = ref.files[0]
+  const file = uploadRef.value
   console.log(file)
 }
 
@@ -234,6 +236,11 @@ const uploadFile = () => {
   text-align: right;
   padding: 0 0 20px 0;
   padding: 0 0 20px 0;
+}
+
+.file-button label {
+  margin-top: 20px;
+  margin-right: 10px;
 }
 
 .control-panel {
