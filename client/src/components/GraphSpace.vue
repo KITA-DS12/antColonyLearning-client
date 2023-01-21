@@ -224,8 +224,6 @@ const downloadFile = () => {
 
 const uploadRef = ref<UploadInstance>()
 const uploadFile = () => {
-  const file = uploadRef.value
-  console.log(file)
 }
 
 </script>
