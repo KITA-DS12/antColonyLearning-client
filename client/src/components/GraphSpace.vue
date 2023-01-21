@@ -222,7 +222,6 @@ const downloadFile = () => {
   link.remove()
 }
 
-const uploadRef = ref<UploadInstance>()
 const uploadFile = () => {
 }
 
